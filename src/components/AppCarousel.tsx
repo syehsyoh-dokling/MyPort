@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
+import { optimizedAssetPath } from "../utils/assetPath";
 import "../styles/project-apps-carousel.css";
 
 type AppItem = {
@@ -277,7 +278,7 @@ export function AppCarousel() {
                     }}
                   >
                     <div className="projectapps-halo" style={{ background: app.halo }} />
-                    <img loading="lazy" src={app.logo} alt={app.name} className="projectapps-logo" />
+                    <img loading="lazy" decoding="async" src={optimizedAssetPath(app.logo)} alt={app.name} className="projectapps-logo" />
                   </div>
                 </div>
               ))}
@@ -292,7 +293,7 @@ export function AppCarousel() {
               }}
             >
               <div className="projectapps-halo" style={{ background: activeApp.halo }} />
-              <img loading="lazy" src={activeApp.logo} alt={activeApp.name} className="projectapps-logo" />
+              <img loading="lazy" decoding="async" src={optimizedAssetPath(activeApp.logo)} alt={activeApp.name} className="projectapps-logo" />
 
               <div className="projectapps-tooltip">
                 <strong>{activeApp.tagline}</strong>
@@ -316,7 +317,7 @@ export function AppCarousel() {
                     }}
                   >
                     <div className="projectapps-halo" style={{ background: app.halo }} />
-                    <img loading="lazy" src={app.logo} alt={app.name} className="projectapps-logo" />
+                    <img loading="lazy" decoding="async" src={optimizedAssetPath(app.logo)} alt={app.name} className="projectapps-logo" />
                   </div>
                 </div>
               ))}

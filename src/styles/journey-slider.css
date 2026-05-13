@@ -4664,8 +4664,88 @@
 
 /* END PATCH - FINAL TARGETED POLISH 2026-05-11 */
 
+/* Slide 6 SMA: keep achievement boxes clear of the character image. */
+#journey .journey-panel[data-slide-index="5"] .journey-custom-achievement-notes,
+#journey .journey-panel[data-slide-index="5"] .journey-notes {
+  width: min(43%, 485px) !important;
+  max-width: 485px !important;
+}
+
+#journey .journey-panel[data-slide-index="5"] .journey-custom-achievement-note,
+#journey .journey-panel[data-slide-index="5"] .journey-note {
+  padding: 5px 8px !important;
+  min-height: 31px !important;
+}
+
+#journey .journey-panel[data-slide-index="5"] .journey-custom-achievement-note p,
+#journey .journey-panel[data-slide-index="5"] .journey-note p {
+  font-size: clamp(9.2px, .7vw, 10.2px) !important;
+}
+
+/* EpiC slide: align Achievement badge and running text to the same left rail. */
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-achievement-heading {
+  left: clamp(40px, 5.2vw, 58px) !important;
+  top: 168px !important;
+  max-width: min(40%, 380px) !important;
+}
+
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-notes {
+  left: clamp(40px, 5.2vw, 58px) !important;
+  top: 222px !important;
+  bottom: 176px !important;
+  width: min(40%, 380px) !important;
+  max-width: 380px !important;
+  padding-left: 0 !important;
+  align-items: stretch !important;
+}
+
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-note {
+  width: 100% !important;
+  max-width: 100% !important;
+}
 
 
 
 
 
+
+
+
+/* Fix padding for limited notes layout like FHI 360 EpiC */
+#journey .journey-panel.split.limited-notes .journey-notes {
+  padding-left: 5%;
+}
+
+/* EpiC slide final tidy pass: restore badge, lower notes, keep footer clear. */
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-achievement-heading {
+  display: inline-flex !important;
+  position: absolute !important;
+  left: clamp(22px, 4vw, 44px) !important;
+  top: 82px !important;
+  transform: none !important;
+  margin: 0 !important;
+  max-width: min(45%, 420px) !important;
+  z-index: 30 !important;
+}
+
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-notes {
+  left: clamp(22px, 4vw, 44px) !important;
+  top: 132px !important;
+  bottom: 172px !important;
+  width: min(45%, 420px) !important;
+  max-width: 420px !important;
+  padding-left: 0 !important;
+  gap: 8px !important;
+  overflow: hidden !important;
+}
+
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-note {
+  min-height: 62px !important;
+  padding: 10px 12px !important;
+  border-radius: 15px !important;
+}
+
+#journey .journey-panel[data-slide-index="22"].split.static-visual.visual-right .journey-note p {
+  font-size: 12px !important;
+  line-height: 1.22 !important;
+}

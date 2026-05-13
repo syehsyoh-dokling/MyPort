@@ -5,6 +5,7 @@ import {
   MousePointerClick,
   Wrench
 } from "lucide-react";
+import { optimizedAssetPath } from "../utils/assetPath";
 
 type PortfolioItem = {
   section: "Digital Products" | "Engineering Tools";
@@ -118,7 +119,7 @@ const portfolioItems: PortfolioAppItem[] = [
     id: "jaksehat-api",
     category: "Universal API",
     name: "JakSehat API",
-    logoPath: "/assets/logo-tool/tool-jaksehat.jpg",
+    logoPath: "/assets/logo-tool/logo-jaksehat.jpg",
     stack: "MySQL, ETL, REST API, Node.js, Cronjob",
     type: "API service",
     functionSummary: "Data warehouse and public API service for integrated health data access.",
@@ -1127,7 +1128,7 @@ const portfolioItems: PortfolioAppItem[] = [
     id: "desainer",
     category: "AI based",
     name: "DesAIhner",
-    logoPath: "/assets/app-logos/desainer.png",
+    logoPath: "/assets/app-logos/desainher.png",
     stack: "TBD",
     type: "AI creative app",
     functionSummary: "AI design assistant for UI, visual, prompt, and creative concepts.",
@@ -4782,14 +4783,18 @@ return (
                     }`}
                     onClick={(event) => handleCenterSubButtonClick(item.id, event)}
                   >
-                    <img loading="lazy"
-                      src={item.logoPath}
+                    <img
+                      loading="lazy"
+                      decoding="async"
+                      src={optimizedAssetPath(item.logoPath)}
                       alt=""
                       className="portfolio-app-logo"
                       onError={(event) => {
-                        event.currentTarget.src = item.logoPath.includes("/logo-tool/")
-                          ? "/assets/logo-tool/tool-missing.png"
-                          : "/assets/logo-web/web-missing.png";
+                        event.currentTarget.src = optimizedAssetPath(
+                          item.logoPath.includes("/logo-tool/")
+                            ? "/assets/logo-tool/tool-missing.png"
+                            : "/assets/logo-web/web-missing.png"
+                        ) || "";
                       }}
                     />
                     <span>{item.name}</span>
@@ -4816,13 +4821,17 @@ return (
                         </div>
 
                         <div className="center-info-logo-slot has-logo">
-                          <img loading="lazy"
-                            src={selectedPortfolioItem.logoPath}
+                          <img
+                            loading="lazy"
+                            decoding="async"
+                            src={optimizedAssetPath(selectedPortfolioItem.logoPath)}
                             alt={selectedPortfolioItem.name}
                             onError={(event) => {
-                              event.currentTarget.src = selectedPortfolioItem.logoPath.includes("/logo-tool/")
-                                ? "/assets/logo-tool/tool-missing.png"
-                                : "/assets/logo-web/web-missing.png";
+                              event.currentTarget.src = optimizedAssetPath(
+                                selectedPortfolioItem.logoPath.includes("/logo-tool/")
+                                  ? "/assets/logo-tool/tool-missing.png"
+                                  : "/assets/logo-web/web-missing.png"
+                              ) || "";
                             }}
                           />
                         </div>

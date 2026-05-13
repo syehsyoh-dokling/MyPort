@@ -1,4 +1,5 @@
 ﻿import { CSSProperties, useEffect, useMemo, useState } from "react";
+import { optimizedAssetPath } from "../utils/assetPath";
 import "../styles/experience-logo-section.css";
 
 type ProjectItem = {
@@ -155,7 +156,7 @@ export function ExperienceLogoSection() {
               {projectList.map((item, index) => (
                 <div className="exp-project-row" key={`${item.code}-${index}`}>
                   <div className="exp-project-logoWrap">
-                    <img loading="lazy" src={item.src} alt={item.code} className="exp-project-logo" />
+                    <img loading="lazy" decoding="async" src={optimizedAssetPath(item.src)} alt={item.code} className="exp-project-logo" />
                   </div>
 
                   <div className="exp-project-meta">
@@ -198,7 +199,7 @@ export function ExperienceLogoSection() {
                 {page.map((item, index) => (
                   <div className="exp-org-item" key={`${item.label}-${index}`}>
                     <div className="exp-org-logoWrap">
-                      <img loading="lazy" src={item.src} alt={item.label} className="exp-org-logo" />
+                      <img loading="lazy" decoding="async" src={optimizedAssetPath(item.src)} alt={item.label} className="exp-org-logo" />
                     </div>
 
                     <div className="exp-org-copy">

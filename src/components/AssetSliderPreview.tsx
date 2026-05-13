@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { slides } from "../data/slides";
+import { optimizedAssetPath } from "../utils/assetPath";
 
 export function AssetSliderPreview() {
   const [slideIndex, setSlideIndex] = useState(0);
@@ -28,7 +29,7 @@ export function AssetSliderPreview() {
 
   if (!activeSlide) return null;
 
-  const currentFrame = frames[frameIndex] || activeSlide.background || "/assets/slide-0/background.png";
+  const currentFrame = optimizedAssetPath(frames[frameIndex] || activeSlide.background || "/assets/slide-0/background.png");
 
   function go(direction: number) {
     setSlideIndex((current) => {
@@ -67,7 +68,7 @@ export function AssetSliderPreview() {
           className="relative grid min-h-[520px] place-items-center bg-cover bg-center p-8"
           style={{
             backgroundImage: activeSlide.background
-              ? `linear-gradient(135deg, rgba(248,251,255,.55), rgba(237,250,246,.72)), url("${activeSlide.background}")`
+              ? `linear-gradient(135deg, rgba(248,251,255,.55), rgba(237,250,246,.72)), url("${optimizedAssetPath(activeSlide.background)}")`
               : "linear-gradient(135deg, #f8fbff, #edfaf6)"
           }}
         >

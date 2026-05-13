@@ -1,9 +1,10 @@
 ﻿import { ArrowRight, Rocket, UserRound } from "lucide-react";
 import { slides } from "../data/slides";
+import { optimizedAssetPath } from "../utils/assetPath";
 
 export function HeroSection() {
   const firstSlide = slides[0];
-  const heroImage = firstSlide?.background || firstSlide?.frames?.[0] || "/assets/slide-0/background.png";
+  const heroImage = optimizedAssetPath(firstSlide?.background || firstSlide?.frames?.[0] || "/assets/slide-0/background.png");
 
   return (
     <section id="home" className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-5 pb-10 pt-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { appLogos } from "../data/appLogos";
 import { journeySlides } from "../data/journeySlides";
+import { optimizedAssetPath } from "../utils/assetPath";
 import "../styles/journey-slider.css";
 import "../styles/slide-1-opening.clean.css";
 
@@ -64,24 +65,54 @@ function PlaneSvg({ active, mode = "fly" }: { active: boolean, mode?: string }) 
 function FadingWords({ text }: { text: string }) {
   const words = text.split(" ");
   return (
-    <div className="journey-fading-words" aria-hidden="true" style={{ position: 'absolute', inset: 0, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', alignContent: 'center', padding: '10%', zIndex: 100 }}>
+    <div className="journey-fading-words" aria-hidden="true">
       <style>{`
-        @keyframes fadeInWord { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOutWord { from { opacity: 1; transform: translateY(0); filter: blur(0); } to { opacity: 0; transform: translateY(-10px); filter: blur(4px); } }
+        @keyframes fadeInWord {
+          from {
+            opacity: 0;
+            transform: translate3d(var(--word-x, 0), var(--word-y, 18px), 0) rotate(var(--word-r, 0deg)) scale(.72);
+            filter: blur(8px);
+          }
+          to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            filter: blur(0);
+          }
+        }
+        @keyframes fadeOutWord {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(-18px) scale(.96);
+            filter: blur(5px);
+          }
+        }
         .journey-fading-words span {
           display: inline-block;
-          font-size: clamp(24px, 4vw, 42px);
-          font-weight: 800;
-          color: #fff;
-          text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+          opacity: 0;
+          font-size: clamp(28px, 4.2vw, 56px);
+          font-weight: 950;
+          line-height: .94;
+          color: #fff8e8;
+          text-shadow:
+            0 3px 0 rgba(15,23,42,.68),
+            0 11px 28px rgba(2,6,23,.72),
+            0 0 24px rgba(251,191,36,.58);
         }
       `}</style>
       {words.map((word, index) => (
         <span
           key={`${word}-${index}`}
           style={{
-            animation: \`fadeInWord 400ms ease forwards, fadeOutWord 400ms ease forwards\`,
-            animationDelay: \`\${index * 120}ms, \${2000 + index * 180}ms\`
+            ["--word-x" as string]: `${(index % 3 - 1) * 46}px`,
+            ["--word-y" as string]: `${index % 2 === 0 ? -34 : 36}px`,
+            ["--word-r" as string]: `${index % 2 === 0 ? -7 : 6}deg`,
+            animation: "fadeInWord 400ms ease forwards, fadeOutWord 400ms ease forwards",
+            animationDelay: `${index * 115}ms, ${2000 + index * 140}ms`
           }}
         >
           {word}&nbsp;
@@ -92,21 +123,12 @@ function FadingWords({ text }: { text: string }) {
 }
 
 const logoPositions = [
-  [78, 10],
-  [12, 18],
-  [54, 28],
-  [30, 62],
-  [82, 72],
-  [48, 10],
-  [16, 78],
-  [70, 48],
-  [38, 35],
-  [88, 36],
-  [8, 46],
-  [58, 70],
-  [24, 8],
-  [46, 52],
-  [74, 22]
+  [12, 10], [30, 8], [50, 12], [70, 8], [88, 15],
+  [8, 28], [25, 32], [42, 28], [60, 32], [78, 28],
+  [15, 48], [35, 52], [55, 48], [75, 52], [92, 45],
+  [5, 68], [28, 72], [48, 68], [68, 72], [85, 65],
+  [18, 88], [38, 85], [58, 88], [78, 85], [50, 30],
+  [82, 8], [20, 15]
 ];
 
 function LogoWall() {
@@ -128,7 +150,7 @@ function LogoWall() {
               ["--logo-size" as string]: `${index % 5 === 0 ? 92 : index % 3 === 0 ? 78 : 68}px`
             }}
           >
-            <img src={logo.src} alt={logo.name} draggable={false} />
+            <img loading="lazy" decoding="async" src={optimizedAssetPath(logo.src)} alt={logo.name} draggable={false} />
             <figcaption>{logo.name}</figcaption>
           </figure>
         );
@@ -192,6 +214,7 @@ export function JourneySlider() {
   const [frameIndex, setFrameIndex] = useState(0);
   const [notes, setNotes] = useState<VisibleNote[]>([]);
   const [storyExpanded, setStoryExpanded] = useState(false);
+  const [graduationPhase, setGraduationPhase] = useState<"idle" | "text" | "frame1" | "flight">("idle");
   const timers = useRef<number[]>([]);
   const firstAutoSlideIndex = useRef(0);
 
@@ -205,7 +228,11 @@ export function JourneySlider() {
   const slideFrames = currentSlide === 1 ? (slide.frames || []) : getSafeSlideFrames(currentSlide, slide.frames || []);
   const frameCount = slideFrames.length || 1;
   const activeFrame = slideFrames[frameIndex % frameCount] || slideFrames[0] || "";
+  const optimizedActiveFrame = optimizedAssetPath(activeFrame) || "";
   const showAchievementHeading = slide.showAchievementBadge !== false && (currentSlide !== 7 && currentSlide !== 8 && ([5, 6].includes(currentSlide) || (currentSlide >= 7 && currentSlide <= 23)));
+  const maxVisibleNotes =
+    slide.maxVisibleNotes ??
+    (currentSlide >= 11 && currentSlide <= 23 && slide.footerLayout === "professional" ? 5 : undefined);
 
     const customAchievementRunningText: Record<number, string[]> = {
     5: [
@@ -364,7 +391,7 @@ export function JourneySlider() {
     };
 
     if (slide.background) {
-      style.backgroundImage = `linear-gradient(135deg, rgba(223,248,255,.22), rgba(231,255,246,.24)), url("${slide.background}")`;
+      style.backgroundImage = `linear-gradient(135deg, rgba(223,248,255,.22), rgba(231,255,246,.24)), url("${optimizedAssetPath(slide.background)}")`;
     }
 
     return style;
@@ -413,8 +440,14 @@ export function JourneySlider() {
     clearTimers();
     setFrameIndex(0);
     setNotes([]);
+    setGraduationPhase(currentSlide === 7 ? "text" : "idle");
 
     const items = activeSlideNotes;
+
+    if (currentSlide === 7) {
+      schedule(() => setGraduationPhase("frame1"), 3150);
+      schedule(() => setGraduationPhase("flight"), 5350);
+    }
 
     if (items.length > 0) {
       const getNoteDelay = getConfiguredNoteDelay;
@@ -428,7 +461,7 @@ export function JourneySlider() {
           };
 
           setNotes((current) => {
-            if (!slide.maxVisibleNotes || current.length < slide.maxVisibleNotes) {
+            if (!maxVisibleNotes || current.length < maxVisibleNotes) {
               return [...current, nextNote];
             }
 
@@ -477,13 +510,53 @@ export function JourneySlider() {
           }
 
           const next = value + 1;
-          return next >= journeySlides.length ? firstAutoSlideIndex.current : next;
+          return next >= journeySlides.length ? 0 : next;
         });
       }, slideDuration);
     }
 
     return clearTimers;
   }, [currentSlide, playing]);
+
+  useEffect(() => {
+    const firstSlideAssets = [
+      journeySlides[0]?.background,
+      ...(journeySlides[0]?.frames || [])
+    ]
+      .map(optimizedAssetPath)
+      .filter(Boolean) as string[];
+
+    const links = firstSlideAssets.map((href) => {
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = href;
+      document.head.appendChild(link);
+      return link;
+    });
+
+    return () => links.forEach((link) => link.remove());
+  }, []);
+
+  useEffect(() => {
+    const nextIndex = currentSlide + 1 >= journeySlides.length ? 0 : currentSlide + 1;
+    const nextAssets = [
+      journeySlides[nextIndex]?.background,
+      ...(journeySlides[nextIndex]?.frames || [])
+    ]
+      .map(optimizedAssetPath)
+      .filter(Boolean) as string[];
+
+    const prefetchTimers = nextAssets.slice(0, 3).map((src, index) =>
+      window.setTimeout(() => {
+        const image = new Image();
+        image.decoding = "async";
+        image.src = src;
+      }, 850 + index * 650)
+    );
+
+    return () => prefetchTimers.forEach((timer) => window.clearTimeout(timer));
+  }, [currentSlide]);
 
   const noteStepMs = slide.fastNotes ? slide.fastNoteStepMs || 120 : 180;
 
@@ -550,7 +623,7 @@ export function JourneySlider() {
         </aside>
 
         <article
-          className={`journey-panel slide-${currentSlide + 1} early-slide-${currentSlide + 1} ${slide.mode} visual-${slide.visualSide || "left"} ${slide.logoWall ? "logo-wall-panel" : ""} ${slide.staticVisual ? "static-visual" : ""} ${slide.maxVisibleNotes ? "limited-notes" : ""} ${slide.typewriterNotes ? "typewriter-notes" : ""} ${playing ? "is-playing" : "is-paused"}`}
+          className={`journey-panel slide-${currentSlide + 1} early-slide-${currentSlide + 1} ${slide.mode} visual-${slide.visualSide || "left"} ${slide.logoWall ? "logo-wall-panel" : ""} ${slide.staticVisual ? "static-visual" : ""} ${maxVisibleNotes ? "limited-notes" : ""} ${slide.typewriterNotes ? "typewriter-notes" : ""} ${currentSlide === 7 ? `graduation-phase-${graduationPhase}` : ""} ${currentSlide === 12 ? "lgsp-rewrite" : ""} ${currentSlide === 22 ? "epic-rewrite" : ""} ${playing ? "is-playing" : "is-paused"}`}
           style={panelStyle}
           data-slide-index={currentSlide}
         >
@@ -570,8 +643,8 @@ export function JourneySlider() {
           </div>
 
           <div className="journey-visual-track">
-            {currentSlide === 7 && (
-              <FadingWords text="At last, the moment I had been waiting for arrived...!" />
+            {currentSlide === 7 && graduationPhase === "text" && (
+              <FadingWords text="At last, the long-awaited moment arrived...!" />
             )}
 
             {/* CUSTOM ACHIEVEMENT TEXT RENDER START */}
@@ -599,12 +672,14 @@ export function JourneySlider() {
             ) : (
               <>
                 {!(currentSlide === 1 && slide.mode === "bus") && (
-                  <div className={`journey-visual-item ${currentSlide === 7 && activeFrame.includes("frame-1.png") ? "slide8-frame-one-active" : ""} ${currentSlide === 7 && !activeFrame.includes("frame-1.png") ? "slide8-flight-frame-active" : ""}` }>
+                  <div className={`journey-visual-item ${currentSlide === 7 && activeFrame.includes("frame-1.png") ? "slide8-frame-one-active" : ""} ${currentSlide === 7 && !activeFrame.includes("frame-1.png") ? "slide8-flight-frame-active" : ""} ${currentSlide === 7 && graduationPhase === "frame1" ? "graduation-frame-one-visible" : ""} ${currentSlide === 7 && graduationPhase === "flight" ? "graduation-flight-visible" : ""}` }>
                     {activeFrame && (
                       <img
                         className="journey-character-img"
-                        src={activeFrame}
+                        src={optimizedActiveFrame}
                         alt={slide.title || slide.h3 || slide.badge}
+                        loading={currentSlide <= 1 ? "eager" : "lazy"}
+                        decoding="async"
                         draggable={false}
                       />
                     )}
@@ -643,7 +718,7 @@ export function JourneySlider() {
                 )}
 
                 <PlaneSvg active={Boolean(slide.planeMode)} mode={currentSlide === 10 ? "tsunami-flight" : "fly"} />
-                {!slide.logoWall && notes.length > 0 && currentSlide !== 6 && currentSlide !== 7 && (
+                {!slide.logoWall && notes.length > 0 && directAchievementNotes.length === 0 && currentSlide !== 6 && currentSlide !== 7 && currentSlide !== 8 && currentSlide !== 10 && currentSlide !== 12 && currentSlide !== 22 && (
                   <div className={`journey-notes ${currentSlide === 5 ? "early-achievement-notes" : ""} ${currentSlide === 6 ? "early-university-notes" : ""} ${currentSlide === 9 ? "early-tsunami-notes" : ""} ${currentSlide === 10 ? "early-return-notes" : ""}`}>
                     {notes.map((note) => {
                       const achievement = parseAchievementNote(note.text);
@@ -702,16 +777,20 @@ export function JourneySlider() {
               {slideFrames[0] && (
                 <img
                   className="journey-bus-cinematic-v2__lead"
-                  src={slideFrames[0]}
+                  src={optimizedAssetPath(slideFrames[0])}
                   alt=""
+                  loading="eager"
+                  decoding="async"
                   draggable={false}
                 />
               )}
               {(slideFrames[1] || slideFrames[0]) && (
                 <img
                   className="journey-bus-cinematic-v2__final"
-                  src={slideFrames[1] || slideFrames[0]}
+                  src={optimizedAssetPath(slideFrames[1] || slideFrames[0])}
                   alt=""
+                  loading="eager"
+                  decoding="async"
                   draggable={false}
                 />
               )}
@@ -741,7 +820,7 @@ export function JourneySlider() {
               display: block !important;
               visibility: visible !important;
               opacity: 1 !important;
-              background-image: url("/assets/slide-1/frame-4.png") !important;
+              background-image: url("/assets/slide-1/frame-4.webp") !important;
               background-repeat: no-repeat !important;
               background-size: contain !important;
               background-position: center center !important;
@@ -768,6 +847,63 @@ export function JourneySlider() {
           <div className="journey-ground" />
           <div className="journey-shadow" />
 
+          {currentSlide === 8 && notes.length > 0 && (
+            <div className="journey-cilegon-overlay" aria-label="Starting from Zero story">
+              {notes.map((note) => (
+                <div
+                  key={`cilegon-${note.id}`}
+                  className={`journey-cilegon-note ${note.exiting ? "exit" : ""}`}
+                >
+                  {note.text}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {currentSlide === 10 && activeFrame && (
+            <div className={`journey-aceh-return-overlay ${activeFrame.includes("frame-1.png") ? "frame-one" : "frame-sequence"}`} aria-hidden="true">
+              <img src={optimizedActiveFrame} alt="" loading="lazy" decoding="async" draggable={false} />
+            </div>
+          )}
+
+          {currentSlide === 12 && (
+            <div className="journey-lgsp-overlay" aria-label="LGSP achievements">
+              <div className="journey-lgsp-achievement-heading">Achievement</div>
+              {notes.length > 0 && (
+                <div className="journey-lgsp-notes">
+                  {notes.map((note) => (
+                    <div
+                      key={`lgsp-${note.id}`}
+                      className={`journey-lgsp-note ${note.exiting ? "exit" : ""}`}
+                    >
+                      <span>{getIcon(note.text)}</span>
+                      <p>{note.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {currentSlide === 22 && (
+            <div className="journey-epic-overlay" aria-label="EpiC achievements">
+              <div className="journey-epic-achievement-heading">Achievement</div>
+              {notes.length > 0 && (
+                <div className="journey-epic-notes">
+                  {notes.map((note) => (
+                    <div
+                      key={`epic-${note.id}`}
+                      className={`journey-epic-note ${note.exiting ? "exit" : ""}`}
+                    >
+                      <span>{getIcon(note.text)}</span>
+                      <p>{note.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <footer className={`journey-slide-footer ${currentSlide <= 7 ? "journey-slide-footer--early" : ""} ${!footerTitle ? "no-footer-title" : ""}`}>
             {footerBadge && <div className="journey-footer-badge">{footerBadge}</div>}
             {(footerMetaTitle || footerSubtitle) && (
@@ -776,8 +912,12 @@ export function JourneySlider() {
                 {footerSubtitle && <span>{footerSubtitle}</span>}
               </div>
             )}
-            {footerTitle && <h3>{footerTitle}</h3>}
-            {footerSummary && <p>{footerSummary}</p>}
+            {(footerTitle || footerSummary) && (
+              <div className="journey-footer-sow">
+                {footerTitle && <h3>{footerTitle}</h3>}
+                {footerSummary && <p>{footerSummary}</p>}
+              </div>
+            )}
           </footer>
         </article>
       </div>

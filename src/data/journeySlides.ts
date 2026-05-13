@@ -1,49 +1,4 @@
-export type JourneyMode =
-  | "opening"
-  | "bus"
-  | "walk"
-  | "achievement"
-  | "scene"
-  | "split"
-  | "plane"
-  | "logo";
-
-export type JourneySequenceStep = {
-  at: number;
-  frame: number;
-  visible?: boolean;
-  phase?: "grad" | "takeoff" | "fly" | "land";
-};
-
-export type JourneySlide = {
-  mode: JourneyMode;
-  duration: number;
-  badge: string;
-  h1: string;
-  h1Html?: string;
-  h2: string;
-  h3?: string;
-  h4?: string;
-  title: string;
-  summary: string;
-  background?: string;
-  frames: string[];
-  frameLoops?: number;
-  walkStart?: string;
-  walkEnd?: string;
-  walkSegments?: { from: string; to: string }[];
-  accent?: string;
-  accentSoft?: string;
-  frameY?: number;
-  rollingNotes?: boolean;
-  notes?: string[];
-  noteWindow?: number;
-  sequence?: JourneySequenceStep[];
-  planeMode?: boolean;
-  footerLayout?: "single" | "professional";
-  visualSide?: "left" | "right";
-  staticVisual?: boolean;
-export type JourneyMode =
+﻿export type JourneyMode =
   | "opening"
   | "bus"
   | "walk"
@@ -342,7 +297,7 @@ export const journeySlides: JourneySlide[] =
 },
   {
     "mode": "plane",
-    "duration": 14700,
+    "duration": 8300,
     "badge": "Ready to Fight in Greater Jakarta",
     "h1": "2003",
     "h2": "Bachelor Graduation & Departure",
@@ -364,7 +319,7 @@ export const journeySlides: JourneySlide[] =
     "rollingNotes": true,
     "noteWindow": 9999,
     "notes": [
-      "At last, the moment I had been waiting for arrived...!"
+      "At last, the long-awaited moment arrived...!"
     ],
     "planeMode": false,
     "fastNotes": true,
@@ -374,17 +329,17 @@ export const journeySlides: JourneySlide[] =
       0
     ],
     "frameSequenceMs": [
-      3600,
-      4700,
-      5050,
-      5400,
-      5750,
-      6100
+      3150,
+      5350,
+      5800,
+      6250,
+      6700,
+      7150
     ]
   },
     {
     "mode": "walk",
-    "duration": 8600,
+    "duration": 7600,
     "badge": "",
     "h1": "2003",
     "h2": "Cilegon, Banten, Indonesia",
@@ -423,17 +378,17 @@ export const journeySlides: JourneySlide[] =
     "noteWindow": 9999,
     "maxVisibleNotes": 1,
     "notes": [
-        "Chasing a dream as an engineer in an industrial city,",
-        "but fate led me to become an ICT teacher,",
-        "a path I walked professionally even though it wasn't my dream."
+        "Chasing an engineering dream in an industrial city.",
+        "Fate led instead to teaching Information, Computer, and Technology.",
+        "A professional path, even when it was not the dream."
     ],
     "fastNotes": true,
     "fastNoteStepMs": 1500,
-    "fastAfterLastMs": 1200,
+    "fastAfterLastMs": 800,
     "fastNoteDelaysMs": [
-        2600,
-        5600,
-        8600
+        1200,
+        3200,
+        5200
     ]
 },
     {
@@ -491,7 +446,10 @@ export const journeySlides: JourneySlide[] =
     "title": "Returning home to make sure his family was safe",
     "summary": "The journey home was filled with fear, prayer, and uncertainty after the disaster.",
     "frames": [
-        "/assets/slide-7/frame-1.png"
+        "/assets/slide-7/frame-1.png",
+        "/assets/slide-7/frame-2.png",
+        "/assets/slide-7/frame-3.png",
+        "/assets/slide-7/frame-4.png"
     ],
     "footerLayout": "single",
     "accent": "#334155",
@@ -503,7 +461,7 @@ export const journeySlides: JourneySlide[] =
         "Returned home to make sure family members were safe.",
         "The flight back carried fear, prayer, and uncertainty."
     ],
-    "planeMode": true,
+    "planeMode": false,
     "fastNotes": true,
     "fastNoteStepMs": 1500,
     "fastAfterLastMs": 900,
@@ -511,6 +469,12 @@ export const journeySlides: JourneySlide[] =
         700,
         2500,
         4400
+    ],
+    "frameSequenceMs": [
+        0,
+        1200,
+        2400,
+        3600
     ]
 },
     {
@@ -550,13 +514,39 @@ export const journeySlides: JourneySlide[] =
         "mode":  "split",
         "duration":  10000,
         "badge":  "LGSP-USAID · Local Governance Support Program",
-        "typewriterNotes":  true,
+        "h1":  "September 2005",
+        "h2":  "Aceh Province, Indonesia",
+        "h3":  "Role: Local Government Management System Specialist",
+        "h4":  "",
+        "title":  "Scope of Work",
+        "summary":  "Supported local government action plans across districts; strengthened capacity building and governance systems; supported public service improvement, complaint handling, citizen gateway, beneficiary data validation, BLUD system support, and post-tsunami e-government reconstruction in Aceh.",
+        "frames":  [
+                       "/assets/slide-9/frame-1.png"
+                   ],
+        "footerLayout":  "professional",
+        "accent":  "#2563eb",
+        "accentSoft":  "rgba(37,99,235,.15)",
+        "rollingNotes":  true,
+        "noteWindow":  9999,
+        "notes":  [
+                      "PUSKORINFO: information coordination support for post-tsunami governance work.",
+                      "Data Validator tool: supported validation of duplicate and non-eligible beneficiary records.",
+                      "e-Complaint Handling System for districts.",
+                      "Citizen Gateway for DISKOMINFO, Aceh Province.",
+                      "BLUD system support for Aceh Jaya.",
+                      "Supported post-tsunami e-government reconstruction in Aceh."
+                  ],
+        "visualSide":  "right",
+        "fastNotes":  true,
         "fastNoteStepMs":  1500,
         "fastAfterLastMs":  650,
         "fastNoteDelaysMs":  [
                                  500,
                                  2000,
-                                 3500
+                                 3500,
+                                 5000,
+                                 6500,
+                                 8000
                              ]
     },
     {
@@ -697,7 +687,7 @@ export const journeySlides: JourneySlide[] =
         "mode":  "split",
         "duration":  5500,
         "badge":  "Kemitraan · Reform The Reformer",
-        "h1":  "2014–2015",
+        "h1":  "2014-2015",
         "h2":  "Reform The Reformer, DFAT Project",
         "h3":  "Role: Communication Specialist",
         "h4":  "",
@@ -763,7 +753,7 @@ export const journeySlides: JourneySlide[] =
         "mode":  "split",
         "duration":  5500,
         "badge":  "MSI · Komisi Informasi Pusat",
-        "h1":  "2015–2016",
+        "h1":  "2015-2016",
         "h2":  "Komisi Informasi Pusat, Jakarta",
         "h3":  "Role: CMS Consultant / System Analyst",
         "h4":  "",
@@ -796,7 +786,7 @@ export const journeySlides: JourneySlide[] =
         "mode":  "split",
         "duration":  8500,
         "badge":  "FHI 360 · LINKAGES",
-        "h1":  "2016–2021",
+        "h1":  "2016-2021",
         "h2":  "FHI 360, Jakarta, Indonesia",
         "h3":  "Role: ICT4D Advisor",
         "h4":  "",
@@ -831,10 +821,10 @@ export const journeySlides: JourneySlide[] =
     },
     {
         "mode":  "split",
-        "duration":  14500,
+        "duration":  11500,
         "badge":  "FHI 360 · EpiC",
-        "h1":  "2021–2025",
-        "h2":  "FHI 360 – EpiC, Jakarta, Indonesia",
+        "h1":  "2021-2025",
+        "h2":  "FHI 360 - EpiC, Jakarta, Indonesia",
         "h3":  "Role: ICT4D Manager",
         "h4":  "",
         "title":  "Scope of Work",
@@ -860,31 +850,33 @@ export const journeySlides: JourneySlide[] =
                   ],
         "visualSide":  "right",
         "staticVisual":  true,
+        "showAchievementBadge": true,
         "maxVisibleNotes":  5,
         "fastNotes":  true,
-        "fastNoteStepMs":  1500,
+        "fastNoteStepMs":  800,
         "fastAfterLastMs":  650,
         "fastNoteDelaysMs":  [
-                                 500,
+                                 400,
+                                 1200,
                                  2000,
-                                 3500,
-                                 5000,
-                                 6500,
-                                 8000,
-                                 9500,
-                                 11000,
-                                 12500
+                                 2800,
+                                 3600,
+                                 4400,
+                                 5200,
+                                 6000,
+                                 6800
                              ]
     },
     {
         "mode":  "logo",
-        "duration":  38000,
+        "duration":  20500,
         "badge":  "Freelancer, Individual Consultant, Alignerr, NIPA, Outlier, Test IO, MSE",
-        "h1":  "2025–2026",
+        "h1":  "2025-2026",
         "h2":  "AI Developer \u0026 Trainer",
         "h3":  "Role: Programer, Reviewer \u0026 Trainer",
         "h4":  "",
         "title":  "Scope of Work",
+        "showAchievementBadge": true,
         "summary":  "Designed AI-powered applications, created prompts and workflows, supported AI training and evaluation, performed software testing and app review, and contributed to market analysis, technology localization, and digital implementation support.",
         "frames":  [
                        "/assets/app-logos/slide-24-ai-composite.svg"
@@ -893,13 +885,9 @@ export const journeySlides: JourneySlide[] =
         "accent":  "#111827",
         "accentSoft":  "rgba(17,24,39,.15)",
         "logoWall":  true,
-        "rollingNotes":  true,
-        "noteWindow":  9999,
-        "notes":  [
-                      "Freelancer / Individual Consultant portfolio.",
-                      "AI developer, AI trainer, app reviewer, and app tester.",
-                      "Modern AI work: Outlier, Alignerr, NIPA, Freelance AI, QA testing, application review, and AI-assisted development."
-                  ],
+        "rollingNotes":  false,
+        "noteWindow":  0,
+        "notes":  [],
         "visualSide":  "right",
         "fastNotes":  true,
         "fastNoteStepMs":  1500,
@@ -911,6 +899,8 @@ export const journeySlides: JourneySlide[] =
                              ]
     }
 ];
+
+
 
 
 

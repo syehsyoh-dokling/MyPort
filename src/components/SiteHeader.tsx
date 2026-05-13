@@ -1,6 +1,7 @@
 ﻿import { useEffect } from "react";
 import { Download } from "lucide-react";
 import { useLiveCounter } from "../hooks/useLiveCounter";
+import { optimizedAssetPath } from "../utils/assetPath";
 import "../styles/site-header-modern.css";
 
 const navItems = [
@@ -109,7 +110,7 @@ export function SiteHeader() {
                   <span className="modern-publication-icon">
                     <img
                       loading="lazy"
-                      src={item.icon}
+                      src={optimizedAssetPath(item.icon)}
                       alt=""
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
